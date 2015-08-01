@@ -1,18 +1,26 @@
 #!/bin/bash
 
+# Specify here the versions for all products
+HADOOP_VERSION=2.7.1
+SPARK_VERSION=1.4.1
+SPARK_HADOOP_VERSION=2.6
+JAVA_ARCHIVE=jdk-8u45-linux-i586.tar.gz
+
+# YOU SHOULDN'T CHANGE ANYTHING FROM HERE
 #java
-JAVA_ARCHIVE=jdk-8u25-linux-i586.tar.gz
+JAVA_MAJOR_VERSION=`echo $JAVA_ARCHIVE | cut -d '-' -f 2 | cut -c1`
+JAVA_BUILD_VERSION=`echo $JAVA_ARCHIVE | cut -d '-' -f 2 | cut -c3-4`
 #hadoop
 HADOOP_PREFIX=/usr/local/hadoop
 HADOOP_CONF=$HADOOP_PREFIX/etc/hadoop
-HADOOP_VERSION=hadoop-2.6.0
+HADOOP_VERSION=hadoop-$HADOOP_VERSION
 HADOOP_ARCHIVE=$HADOOP_VERSION.tar.gz
-HADOOP_MIRROR_DOWNLOAD=../resources/hadoop-2.6.0.tar.gz
+HADOOP_MIRROR_DOWNLOAD=../resources/hadoop-$HADOOP_VERSION.tar.gz
 HADOOP_RES_DIR=/vagrant/resources/hadoop
 #spark
-SPARK_VERSION=spark-1.1.1
-SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop2.4.tgz
-SPARK_MIRROR_DOWNLOAD=../resources/spark-1.1.1-bin-hadoop2.4.tgz
+SPARK_VERSION=spark-$SPARK_VERSION
+SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION.tgz
+SPARK_MIRROR_DOWNLOAD=../resources/spark-$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION.tgz
 SPARK_RES_DIR=/vagrant/resources/spark
 SPARK_CONF_DIR=/usr/local/spark/conf
 #ssh

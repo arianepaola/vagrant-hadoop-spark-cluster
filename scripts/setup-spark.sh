@@ -29,7 +29,7 @@ function installSpark {
 	else
 		installRemoteSpark
 	fi
-	ln -s /usr/local/$SPARK_VERSION-bin-hadoop2.4 /usr/local/spark
+	ln -s /usr/local/$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION /usr/local/spark
 }
 
 echo "setup spark"
