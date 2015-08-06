@@ -19,8 +19,7 @@ done
 #echo "total nodes = $TOTAL_NODES"
 
 function installSSHPass {
-	rpm -ivh resources/sshpass-1.05-1.el6.rf.i686.rpm
-	yum -y install sshpass
+	rpm -ivh /vagrant/resources/sshpass-1.05-1.el6.rf.i686.rpm
 }
 
 function overwriteSSHCopyId {
