@@ -1,39 +1,39 @@
 #!/bin/bash
 source "/vagrant/scripts/common.sh"
 
-function installLocalSpark {
-	echo "install spark from local file"
-	FILE=/vagrant/resources/$SPARK_ARCHIVE
+function installLocalFlink {
+	echo "install flink from local file"
+	FILE=/vagrant/resources/$FLINK_ARCHIVE
 	tar -xzf $FILE -C /usr/local
 }
 
-function installRemoteSpark {
-	echo "install spark from remote file"
-	curl -o /vagrant/resources/$SPARK_ARCHIVE -O -L $SPARK_MIRROR_DOWNLOAD
-	tar -xzf /vagrant/resources/$SPARK_ARCHIVE -C /usr/local
+function installRemoteFlink {
+	echo "install flink from remote file"
+	curl -o /vagrant/resources/$FLINK_ARCHIVE -O -L $FLINK_MIRROR_DOWNLOAD
+	tar -xzf /vagrant/resources/$FLINK_ARCHIVE -C /usr/local
 }
 
-function setupSpark {
-	echo "setup spark"
-	cp -f /vagrant/resources/spark/slaves /usr/local/spark/conf
+function setupFlink {
+	echo "setup flink"
+	#cp -f /vagrant/resources/flink/slaves /usr/local/flink/conf
 }
 
 function setupEnvVars {
-	echo "creating spark environment variables"
-	cp -f $SPARK_RES_DIR/spark.sh /etc/profile.d/spark.sh
+	echo "creating flink environment variables"
+	#cp -f $FLINK_RES_DIR/flink.sh /etc/profile.d/flink.sh
 }
 
-function installSpark {
-	if resourceExists $SPARK_ARCHIVE; then
-		installLocalSpark
+function installFlink {
+	if resourceExists $FLINK_ARCHIVE; then
+		installLocalFlink
 	else
-		installRemoteSpark
+		installRemoteFlink
 	fi
-	ln -s /usr/local/$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION /usr/local/spark
+	ln -s /usr/local/$FLINK_VERSION /usr/local/flink
 }
 
-echo "setup spark"
+echo "setup flink"
 
-installSpark
-setupSpark
+installFlink
+setupFlink
 setupEnvVars

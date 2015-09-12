@@ -3,7 +3,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     numNodes = 4
-    masterMem = 1024
+    masterMem = 2048
     workerMem = 2048
 	# application should be either "flink" or "spark"
 	app = "flink"
@@ -14,7 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             node.vm.box_url = "http://files.brianbirkinbine.com/vagrant-centos-65-i386-minimal.box"
             node.vm.provider "virtualbox" do |v|
               v.name = "node#{i}"
-              if i > 2
+              if i > 1
                   v.customize ["modifyvm", :id, "--memory", "#{workerMem}"]
               else
                   v.customize ["modifyvm", :id, "--memory", "#{masterMem}"]
@@ -31,12 +31,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                 s.path = "scripts/setup-centos-hosts.sh"
                 s.args = "-t #{numNodes}"
             end
-            if i == 2
-                node.vm.provision "shell" do |s|
-                    s.path = "scripts/setup-centos-ssh.sh"
-                    s.args = "-s 3 -t #{numNodes}"
-                end
-            end
             if i == 1
                 node.vm.provision "shell" do |s|
                     s.path = "scripts/setup-centos-ssh.sh"
@@ -47,16 +41,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             node.vm.provision "shell", path: "scripts/setup-hadoop.sh"
             node.vm.provision "shell" do |s|
                 s.path = "scripts/setup-hadoop-slaves.sh"
-                s.args = "-s 3 -t #{numNodes}"
+                s.args = "-s 2 -t #{numNodes}"
             end
             if app == "flink"
                 node.vm.provision "shell", path: "scripts/setup-flink.sh"
             elsif app == "spark"
                 node.vm.provision "shell", path: "scripts/setup-spark.sh"
-            end
-            node.vm.provision "shell" do |s|
-                s.path = "scripts/setup-spark-slaves.sh"
-                s.args = "-s 3 -t #{numNodes}"
+                # for spark standalone only, useless with YARN
+                #node.vm.provision "shell" do |s|
+                #    s.path = "scripts/setup-spark-slaves.sh"
+                #    s.args = "-s 2 -t #{numNodes}"
+                #end
             end
         end
     end
