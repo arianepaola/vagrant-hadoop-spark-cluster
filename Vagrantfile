@@ -49,11 +49,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                 s.path = "scripts/setup-hadoop-slaves.sh"
                 s.args = "-s 3 -t #{numNodes}"
             end
-			if app == "flink"
-	            node.vm.provision "shell", path: "scripts/setup-flink.sh"
-			else if app == "spark"
-	            node.vm.provision "shell", path: "scripts/setup-spark.sh"
-			end
+            if app == "flink"
+                node.vm.provision "shell", path: "scripts/setup-flink.sh"
+            elsif app == "spark"
+                node.vm.provision "shell", path: "scripts/setup-spark.sh"
+            end
             node.vm.provision "shell" do |s|
                 s.path = "scripts/setup-spark-slaves.sh"
                 s.args = "-s 3 -t #{numNodes}"
