@@ -50,11 +50,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                 node.vm.provision "shell", path: "scripts/setup-flink.sh"
             elsif app == "spark"
                 node.vm.provision "shell", path: "scripts/setup-spark.sh"
-                # for spark standalone only, useless with YARN
-                #node.vm.provision "shell" do |s|
-                #    s.path = "scripts/setup-spark-slaves.sh"
-                #    s.args = "-s 2 -t #{numNodes}"
-                #end
+                node.vm.provision "shell" do |s|
+                    s.path = "scripts/setup-spark-slaves.sh"
+                    s.args = "-s 2 -t #{numNodes}"
+                end
             end
         end
     end
