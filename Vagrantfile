@@ -5,11 +5,11 @@ Vagrant.require_version ">= 1.4.3"
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-    numNodes = 4
+    numNodes = 3
     masterMem = 2048
-    workerMem = 2048
+    workerMem = 1024
 	# application should be either "flink" or "spark"
-	app = "flink"
+	app = "spark"
     r = numNodes..1
     (r.first).downto(r.last).each do |i|
         config.vm.define "node-#{i}" do |node|
@@ -53,6 +53,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                 node.vm.provision "shell" do |s|
                     s.path = "scripts/setup-spark-slaves.sh"
                     s.args = "-s 2 -t #{numNodes}"
+                end
+            end
+            # Initializing and launching the master
+            if i == 1
+                node.vm.provision "shell", path: "scripts/setup-master.sh"
+                node.vm.provision "shell" do |s|
+                    s.path = "scripts/master_launch.sh"
+                    s.args = "#{app}"
                 end
             end
         end

@@ -5,13 +5,12 @@ vagrant-hadoop-spark-cluster
 ### Vagrant project to spin up a cluster of 4, 32-bit CentOS6.5 Linux virtual machines with Hadoop v2.6.0 and Spark v1.1.1. 
 Ideal for development cluster on a laptop with at least 4GB of memory.
 
-1. node1 : HDFS NameNode + Spark Master
-2. node2 : YARN ResourceManager + JobHistoryServer + ProxyServer
-3. node3 : HDFS DataNode + YARN NodeManager + Spark Slave
-4. node4 : HDFS DataNode + YARN NodeManager + Spark Slave
+1. node1 : HDFS NameNode + Spark Master + YARN ResourceManager + JobHistoryServer + ProxyServer
+3. node2 : HDFS DataNode + YARN NodeManager + Spark Slave
+4. node3 : HDFS DataNode + YARN NodeManager + Spark Slave
 
 # 2. Prerequisites and Gotchas to be aware of
-1. At least 1GB memory for each VM node. Default script is for 4 nodes, so you need 4GB for the nodes, in addition to the memory for your host machine.
+1. At least 1GB memory for each VM node and 2GB for the master. Default script is for 3 nodes, so you need 4GB for the nodes, in addition to the memory for your host machine.
 2. Vagrant 1.7 or higher, Virtualbox 4.3.2 or higher
 3. Preserve the Unix/OSX end-of-line (EOL) characters while cloning this project; scripts will fail with Windows EOL characters.
 4. Project is tested on Ubuntu 32-bit 14.04 LTS host OS; not tested with VMware provider for Vagrant.
@@ -22,9 +21,9 @@ Ideal for development cluster on a laptop with at least 4GB of memory.
 2. [Download and install Vagrant](http://www.vagrantup.com/downloads.html).
 3. Run ```vagrant box add centos65 http://files.brianbirkinbine.com/vagrant-centos-65-i386-minimal.box```
 4. Git clone this project, and change directory (cd) into this project (directory).
-5. [Download Hadoop 2.6 into the /resources directory](http://apache.crihan.fr/dist/hadoop/common/stable/hadoop-2.6.0.tar.gz)
-6. [Download Spark 1.1.1 into the /resources directory](http://d3kbcqa49mib13.cloudfront.net/spark-1.1.1-bin-hadoop2.4.tgz)
-7. [Download Java 1.8 into the /resources directory](http://download.oracle.com/otn-pub/java/jdk/8u25-b17/jdk-8u25-linux-i586.tar.gz)
+5. [Download Hadoop 2.7.1 into the /resources directory] ()
+6. [Download Spark 1.6.0 into the /resources directory] (http://www.us.apache.org/dist/spark/spark-1.6.0/spark-1.6.0-bin-hadoop2.6.tgz)
+7. [Download Java 1.8 into the /resources directory] (http://download.oracle.com/otn-pub/java/jdk/8u25-b17/jdk-8u25-linux-i586.tar.gz)
 8. Run ```vagrant up``` to create the VM.
 9. Run ```vagrant ssh``` to get into your VM.
 10. Run ```vagrant destroy``` when you want to destroy and get rid of the VM.
@@ -37,7 +36,7 @@ You need to modify the scripts to adapt the VM setup to your environment.
 
 2. ./Vagrantfile  
 To add/remove slaves, change the number of nodes:  
-line 5: ```numNodes = 4```  
+line 5: ```numNodes = 3```  
 To modify VM memory change the following line:  
 line 13: ```v.customize ["modifyvm", :id, "--memory", "1024"]```  
 3. /scripts/common.sh  
@@ -125,8 +124,8 @@ Then go here https://spark.apache.org/docs/latest/quick-start.html to start the 
 You can check the following URLs to monitor the Hadoop daemons.
 
 1. [NameNode] (http://10.211.55.101:50070/dfshealth.html)
-2. [ResourceManager] (http://10.211.55.102:8088/cluster)
-3. [JobHistory] (http://10.211.55.102:19888/jobhistory)
+2. [ResourceManager] (http://10.211.55.101:8088/cluster)
+3. [JobHistory] (http://10.211.55.101:19888/jobhistory)
 4. [Spark] (http://10.211.55.101:8080)
 
 # 7. References
