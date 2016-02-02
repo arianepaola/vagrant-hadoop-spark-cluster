@@ -73,6 +73,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                     inline: "$SPARK_HOME/sbin/start-all.sh",
                     privileged: true
             end
+            # Start YARN
+            if i == 2
+                node.vm.provision "shell",
+                    inline: "$HADOOP_YARN_HOME/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR start resourcemanager",
+                    privileged: true
+                node.vm.provision "shell",
+                    inline: "$HADOOP_YARN_HOME/sbin/yarn-daemons.sh --config $HADOOP_CONF_DIR start nodemanager",
+                    privileged: true
+                node.vm.provision "shell",
+                    inline: "$HADOOP_YARN_HOME/sbin/yarn-daemon.sh start proxyserver --config $HADOOP_CONF_DIR",
+                    privileged: true
+                node.vm.provision "shell",
+                    inline: "$HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh start historyserver --config $HADOOP_CONF_DIR",
+                    privileged: true
+            end
+
+
         end
     end
 end
