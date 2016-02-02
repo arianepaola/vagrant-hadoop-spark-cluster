@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+require 'ipaddr'
+
 Vagrant.require_version ">= 1.4.3"
 VAGRANTFILE_API_VERSION = "2"
 
@@ -8,10 +10,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     numNodes = 3
     masterMem = 2048
     workerMem = 1024
+
+startIpAddress = IPAddr.new "10.211.55.10"
+    nodeIpAddresses = []
+
+    numNodes.times do |i|
+        ipAddress = startIpAddress.to_i + i
+        nodeIp = [24, 16, 8, 0].collect {|k| (ipAddress >> k) & 255}.join('.')
+
+        nodeIpAddresses << nodeIp
+    end
+
 	# application should be either "flink" or "spark"
 	app = "spark"
     r = numNodes..1
-    (r.first).downto(r.last).each do |i|
+
+    numNodes.downto(1).each do |i|
         config.vm.define "node-#{i}" do |node|
             node.vm.box = "centos65"
             node.vm.box_url = "http://files.brianbirkinbine.com/vagrant-centos-65-i386-minimal.box"
@@ -23,11 +37,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                   v.customize ["modifyvm", :id, "--memory", "#{masterMem}"]
               end
             end
-            if i < 10
-                node.vm.network :private_network, ip: "10.211.55.10#{i}"
-            else
-                node.vm.network :private_network, ip: "10.211.55.1#{i}"
-            end
+
+            node.vm.network "private_network", ip: nodeIpAddresses[i-1]
+
             node.vm.hostname = "node#{i}"
             node.vm.provision "shell", path: "scripts/setup-centos.sh"
             node.vm.provision "shell" do |s|
