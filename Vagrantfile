@@ -55,13 +55,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                     s.args = "-s 2 -t #{numNodes}"
                 end
             end
-            # Initializing and launching the master
+
+
+            # Initialize the Hadoop cluster, start Hadoop daemons
             if i == 1
-                node.vm.provision "shell", path: "scripts/setup-master.sh"
-                node.vm.provision "shell" do |s|
-                    s.path = "scripts/master_launch.sh"
-                    s.args = "#{app}"
-                end
+                node.vm.provision "shell",
+                    inline: "$HADOOP_PREFIX/bin/hdfs namenode -format myhadoop",
+                    privileged: true
+                node.vm.provision "shell",
+                    inline: "$HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start namenode",
+                    privileged: true
+                node.vm.provision "shell",
+                    inline: "$HADOOP_PREFIX/sbin/hadoop-daemons.sh --config $HADOOP_CONF_DIR --script hdfs start datanode",
+                    privileged: true
+                # Start Spark in Standalone Mode
+                node.vm.provision "shell",
+                    inline: "$SPARK_HOME/sbin/start-all.sh",
+                    privileged: true
             end
         end
     end
